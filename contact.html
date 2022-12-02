@@ -1,277 +1,193 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="author" content="郭贵楠">
-    <!-- description -->
-    <meta name="description" content="William Gwok's homepage, used to record my life and the way to apply for a doctorate.">
-    <!-- keywords -->
-    <meta name="keywords" content="I want people to be happy every day, I hope my wish will come true soon">
-    <!-- Page Title -->
-    <title>郭贵楠 | Contact</title>
-    <!-- Favicon -->
-   
-    <!-- Bundle -->
-    <link rel="stylesheet" href="static/css/bundle.min.css">
-    <!-- Plugin Css -->
-    <link rel="stylesheet" href="static/css/cubeportfolio.min.css">
-    <link rel="stylesheet" href="static/css/owl.carousel.min.css">
-    <link href="static/css/jquery.fancybox.min.css" rel="stylesheet">
-    <link href="static/css/LineIcons.min.css" rel="stylesheet">
-    <link href="static/css/jquery.fancybox.min.css" rel="stylesheet">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="initial-scale=1,maximum-scale=1,user-scalable=no"
+    />
+    <title>
+      Line of sight widget | Sample | ArcGIS API for JavaScript 4.25
+    </title>
 
-    <!-- Style Sheet -->
-    <link rel="stylesheet" href="static/css/style.css">
-</head>
+    <link
+      rel="stylesheet"
+      href="https://js.arcgis.com/4.25/esri/themes/light/main.css"
+    />
+    <script src="https://js.arcgis.com/4.25/"></script>
 
-<body data-spy="scroll" data-target=".navbar" data-offset="150">
+    <script>
+      require([
+        "esri/WebScene",
+        "esri/views/SceneView",
+        "esri/widgets/LineOfSight",
+        "esri/widgets/Expand",
+        "esri/geometry/Point",
+        "esri/Graphic"
+      ], (WebScene, SceneView, LineOfSight, Expand, Point, Graphic) => {
+        /************************************************************
+         * Load a web scene and set it to the map property in a SceneView.
+         ************************************************************/
+        const scene = new WebScene({
+          portalItem: {
+            id: "82127fea11d6439abba3318cb93252f7"
+          }
+        });
 
-<!-- START PRELOADER  -->
-<div class="loader-area">
-    <div class="psoload">
-        <div class="straight"></div>
-        <div class="curve"></div>
-        <div class="center"></div>
-        <div class="inner"></div>
-    </div>
-</div>
-<!-- END PRELOADER -->
+        const view = new SceneView({
+          map: scene,
+          container: "viewDiv"
+        });
 
+        /**************************************
+         * Initialize the LineOfSight widget
+         **************************************/
 
-<!-- START NAVBAR SECTION -->
-<header id="header">
+        const lineOfSight = new LineOfSight({
+          view: view,
+          container: "losWidget"
+        });
 
-    <!--    NAVBAR FOR LARGE SCREEN-->
-    <nav id="my-nav1" class="navbar navbar-expand-sm navbar-light rounded-bar inner-navs transparent-bar">
+        /**************************************
+         * Add symbols to mark the intersections
+         * for the line of sight
+         **************************************/
 
-        <div class="container bg-trans-color">
-            <!-- <div class="logo">
-                <a href="index.html"><img src="static/picture/logo.png" alt="Logo Img"></a>
-            </div> -->
+        const viewModel = lineOfSight.viewModel;
 
-            <div class="ml-auto mr-auto small-screen">
-                <div class="banner-icons">
-                    <a><i class="lab la-facebook-f icons"></i></a>
-                </div>
+        // watch when observer location changes
+        viewModel.watch("observer", (value) => {
+          setIntersectionMarkers();
+        });
 
-                <div class="banner-icons">
+        // watch when a new target is added or removed
+        viewModel.targets.on("change", (event) => {
+          event.added.forEach((target) => {
+            setIntersectionMarkers();
+            // for each target watch when the intersection changes
+            target.watch("intersectedLocation", setIntersectionMarkers);
+          });
+          event.removed.forEach(() => {
+            // remove intersection markers for removed targets (remove with right click on target)
+            setIntersectionMarkers();
+          });
+        });
 
-                    <a class="dropdown-toggle" data-toggle="dropdown">
-                        <i class="las la-shopping-cart icons"></i></a>
+        // an inverted cone marks the intersection that occludes the view
+        const intersectionSymbol = {
+          type: "point-3d",
+          symbolLayers: [
+            {
+              type: "object",
+              resource: { primitive: "inverted-cone" },
+              material: { color: [255, 100, 100] },
+              height: 10,
+              depth: 10,
+              width: 10,
+              anchor: "relative",
+              anchorPosition: { x: 0, y: 0, z: -0.7 }
+            }
+          ]
+        };
 
-                    <div class="dropdown-menu dropdown-menu-right dropdown-cart">
-                        <div class="arrow">
-                            <i class="fas fa-caret-up user-utiliity-caret"></i>
-                        </div>
-                    </div>
-                </div>
+        function setIntersectionMarkers() {
+          view.graphics.removeAll();
+          viewModel.targets.forEach((target) => {
+            if (target.intersectedLocation) {
+              const graphic = new Graphic({
+                symbol: intersectionSymbol,
+                geometry: target.intersectedLocation
+              });
+              view.graphics.add(graphic);
+            }
+          });
+        }
 
-            </div>
+        /**************************************
+         * Create an analysis by setting
+         * the initial observer and four targets
+         **************************************/
 
-            <div class="my-tog-btn">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
+        viewModel.observer = new Point({
+          latitude: 42.3521,
+          longitude: -71.0564,
+          z: 139
+        });
 
-            <div class="collapse navbar-collapse" id="navbarSupportedContent1">
-                <div class="collapse navbar-collapse">
-                    <ul id="primary" class="navbar-nav ml-auto mr-auto">
+        viewModel.targets = [
+          createTarget(42.3492, -71.0529),
+          createTarget(42.3477, -71.0542),
+          createTarget(42.3485, -71.0533),
+          createTarget(42.3467, -71.0549)
+        ];
 
-                        <li class="nav-item">
-                            <a class="nav-link" href="index.html">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="about.html">About Me</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="gallery.html">Gallery</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="blog.html">Blog</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="">Contact</a>
-                        </li>
-                    </ul>
-                    <!-- 推特等图标 -->
-                    <!-- <div class="banner-icons social-icons-simple">
-                        <a href="#"><i class="lni lni-facebook-filled"></i></a>
-                        <a href="#"><i class="lni lni-twitter-original"></i></a>
-                        <a href="#"><i class="lni lni-instagram"></i></a>
-                    </div> -->
-                </div>
-            </div>
+        function createTarget(lat, lon, z) {
+          return {
+            location: new Point({
+              latitude: lat,
+              longitude: lon,
+              z: z || 0
+            })
+          };
+        }
+
+        // add an Expand widget to make the menu responsive
+        const expand = new Expand({
+          expandTooltip: "Expand line of sight widget",
+          view: view,
+          content: document.getElementById("menu"),
+          expanded: true
+        });
+
+        view.ui.add(expand, "top-right");
+
+        view.when(() => {
+          // allow user to turn the layer with new planned buildings on/off
+          // and see how the line of sight analysis changes
+          const plannedBuildingsLayer = view.map.layers
+            .filter((layer) => {
+              return (
+                layer.title === "Boston major projects - MajorProjectsBuildings"
+              );
+            })
+            .getItemAt(0);
+
+          document
+            .getElementById("layerVisibility")
+            .addEventListener("change", (event) => {
+              plannedBuildingsLayer.visible = event.target.checked;
+            });
+        });
+      });
+    </script>
+
+    <style>
+      html,
+      body,
+      #viewDiv {
+        padding: 0;
+        margin: 0;
+        height: 100%;
+        width: 100%;
+      }
+      #menu {
+        padding: 1em;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="viewDiv">
+      <div id="viewDiv">
+        <div id="menu" class="esri-widget">
+          <h3>Line of sight analysis</h3>
+          <input type="checkbox" id="layerVisibility" checked /><label
+            for="layerVisibility"
+            >Show development layer</label
+          >
+          <div id="losWidget"></div>
         </div>
-    </nav>
-
-    <!--MODEL WINDOW FOR NAVBAR-->
-    <div class="outer-window">
-        <div class="navbar_small">
-            <a class="close-outerwindow">
-                <i class="lni lni-close"></i>
-            </a>
-            <!-- <div class="logo">
-                <a href="index.html"><img src="static/picture/logo-black.png" alt="Logo Img"></a>
-            </div> -->
-
-        </div>
-        <nav class="navbar1">
-            <ul class="navbar-nav">
-                <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
-                <li class="nav-item"><a class="nav-link" href="about.html">About Me</a></li>
-                <li class="nav-item"><a class="nav-link" href="gallery.html">Gallery</a></li>
-                <li class="nav-item"><a class="nav-link" href="blog.html">Blog</a></li>
-                <li class="nav-item"><a class="nav-link" href="">Contact</a></li>
-            </ul>
-        </nav>
-        <div class="side-nav-footer">
-            
-        </div>
+      </div>
     </div>
-
-</header>
-<!-- END NAVBAR SECTION -->
-
-<!-- <section class="header-contact-img position-relative" id="header-contact-img">
-    <div class="overlay"></div>
-    <div class="standalone-content-data">
-        <h2 class="hide-cursor">Contact Me</h2>
-        <ul class="page-breadcrumb link d-flex justify-content-center">
-            <li><a href="index.html"><span class="icon fas fa-home"></span>Home</a></li>
-            <li><a href="">Contact Me</a></li>
-        </ul>
-    </div>
-</section> -->
-
-<section class="header-contact-img position-relative" id="header-contact-img">
-    <div class="overlay"></div>
-    <div class="standalone-content-data">
-        <h2 class="hide-cursor">Contact Me</h2>
-        <ul class="page-breadcrumb link d-flex justify-content-center">
-            <li><a href="index.html"><span class="icon fas fa-home"></span>Home</a></li>
-            <li><a href="">Contact Me</a></li>
-        </ul>
-    </div>
-</section>
-
-<section class="contact-sec" id="contact-sec">
-
-    <div class="container">
-        <div class="row">
-            <div class="col-12 col-lg-6 contact-description wow slideInLeft" data-wow-delay=".8s">
-                <div class="contact-detail wow fadeInLeft">
-                    <div class="ex-detail">
-                        <h2 class="heading text-black">Get In Touch</h2>
-                    </div>
-                    <p class="sub-heading text-grey small-text text-left">
-                        If you are willing to give me the opportunity to study for a doctorate or to cooperate in scientific research, please contact me.
-                    </p>
-                    <div class="row location-details text-center text-md-left">
-                        <div class="col-12 col-md-6 country-1">
-                            <h4 class="heading-text text-left text-black">People's Republic of China</h4>
-                            <ul>
-                                <li><i class="fas fa-envelope"></i><a>guogn3@mail2.sysu.edu.cn</a></li>
-                                <li><i class="fas fa-envelope"></i><a target="_blank" href="https://accounts.google.com/ServiceLogin/signinchooser?">guoguinan7@gmail.com（Backup email）</a></li>
-                                <li><i class="fas fa-mobile-alt"></i><a target="_blank" href="https://github.com/GuinanGuo?">GithubPage</a></li>
-                                <li><i class="fas fa-map-marker"></i><a target="_blank" href="https://www.google.com.hk/maps/place/中山大学/@23.3414283,113.1999205,10z/data=!4m9!1m2!2m1!1z5Lit5Zu95bm_5Lic55yB5bm_5bee5biC6ZmE6L-R55qE5Lit5bGx5aSn5a2m!3m5!1s0x3402ff58c0a3e3af:0x3bf284e3ae6e4829!8m2!3d23.0965384!4d113.298883!15sCi3kuK3lm73lub_kuJznnIHlub_lt57luILpmYTov5HnmoTkuK3lsbHlpKflraYiA4gBAZIBB2NvbGxlZ2XgAQA">
-                                    GuangZhou, China</a></li>
-                            </ul>
-                        </div>
-                        
-                        <!-- 并排还可以写另一些联系方式 -->
-                        <!-- <div class="col-12 col-md-6 couuntry-1">
-                            <h4 class="heading-text text-left text-black">Australia</h4>
-                            <ul>
-                                <li><i class="fas fa-mobile-alt"></i><a href="#">+(34) 609 33 17 54</a></li>
-                                <li><i class="fas fa-envelope"></i><a href="#">email@website.com</a></li>
-                                <li><i class="fas fa-map-marker"></i><a href="#">201 Oak Street 27 Manchester, USA</a></li>
-                            </ul>
-                        </div> -->
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-lg-6 contact-box text-center text-md-left wow slideInRight" data-wow-delay=".8s">
-                <div class="c-box wow fadeInRight">
-                    <h4 class="small-heading">Leave Message</h4>
-                    <form class="contact-form" id="contact-form-data">
-                        <div class="row my-form">
-                            <div class="col-md-12 col-sm-12">
-                                <div id="result"></div>
-                            </div>
-                            <div class="col-12 col-md-6">
-                                <input type="text" class="form-control" id="candidate_fname" name="firstName" placeholder="First Name" required="required">
-                            </div>
-                            <div class="col-12 col-md-6">
-                                <input type="text" class="form-control" id="candidate_lname" name="lastName" placeholder="Last Name" required="required">
-                            </div>
-                            <div class="col-12 col-md-6">
-                                <input type="email" class="form-control" id="user_email" name="userEmail" placeholder="Email" required="required">
-                            </div>
-                            <div class="col-12 col-md-6">
-                                <input type="text" class="form-control" id="user_subject" name="userSubject" placeholder="Subject" required="required">
-                            </div>
-                            <div class="col-12">
-                                <label for="user_message"></label><textarea class="form-control" id="user_message" name="userMessage" placeholder="The message function is being updated, temporarily unable to leave a message. Please email me directly" rows="7" required="required"></textarea>
-                            </div>
-                            <div class="col-12">
-                                <button class="btn contact_btn btn-slider trans-btn mt-4 rounded-pill" type="button">SUBMIT
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- START MAP SECTION  -->
-<section id="map">
-    <div class="row">
-        <div class="col-12">
-            <div class="mapouter">
-                <div class="gmap_canvas">
-                    <iframe class="map" src="javascript:;" width="600" height="450" style="border:0;" allowfullscreen=""></iframe>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section id="footer" class="footer">
-    <div class="container">
-        <div class="row">
-            <div class="col-12 text-center wow fadeIn" data-wow-duration=".8s">
-                <!-- <ul class="footer_ul">
-                    <li class="footer_list"><i class="lni lni-facebook-filled"></i></li>
-                    <li class="footer_list"><i class="lni lni-twitter-original"></i></li>
-                    <li class="footer_list"><i class="lni lni-google"></i></li>
-                    <li class="footer_list"><i class="lni lni-instagram-filled"></i></li>
-                </ul> -->
-                <p class="info footer_text"> &copy; 郭贵楠｜William Gwok's Lonely Island </p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- JavaScript -->
-<script src="static/js/bundle.min.js"></script>
-<!-- Plugin Js -->
-<script src="static/js/owl.carousel.min.js"></script>
-<script src="static/js/jquery.cubeportfolio.min.js"></script>
-<!-- custom script -->
-<script src="static/js/jquery.appear.js"></script>
-<script src="static/js/jquery.fancybox.min.js"></script>
-<script src="static/js/owl.carousel.min.js"></script>
-<script src="static/js/parallaxie.min.js"></script>
-<script src="static/js/wow.min.js"></script>
-<script src="static/js/jquery.cubeportfolio.min.js"></script>
-<script src="static/js/jquery.fancybox.min.js"></script>
-<!--contact form-->
-<script src="static/js/contact_us.js"></script>
-<script src="static/js/function.js"></script>
-</body>
+  </body>
 </html>
