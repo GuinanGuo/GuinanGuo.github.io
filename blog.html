@@ -307,66 +307,143 @@
                     </div>
 
 
-                    <div class="col-sm-12 col-md-12 col-lg-8 pt-sm-4 pt-md-0 pt-lg-0 order-1 order-md-2">
-                        <div id="section2" class="audio-post mt-10">
-                            <!-- 视频区域 -->
-                            <div class="video-wrapper"> <!-- 新的包装容器 -->
-                                <video controls class="full-width-video">
-                                    <source src="static/video/your-video.mp4" type="video/mp4">
-                                    Your browser does not support the video tag.
-                                </video>
-                            </div>
-                            
-                            <div class="text_minimal">
-                                <a><h2>Feeling Lost, There is a desire to change.</h2></a>
-                                <div class="display">
-                                    <p class="date">09-03, 2024</p><div class="verticle_line margin_1"></div>
-                                    <span>GuangZhou</span>
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-12 col-lg-8 pt-sm-4 pt-md-0 pt-lg-0 order-1 order-md-2">
+                                <!-- 朱自清作文 -->
+                                <div id="section2" class="audio-post mt-10">
+                                    <!-- 视频区域 -->
+                                    <div class="video-wrapper">
+                                        <video controls class="full-width-video">
+                                            <source src="static/video/video1.MOV" type="video/mp4">
+                                            Your browser does not support the video tag.
+                                        </video>
+                                    </div>
+                                    
+                                    <div class="text_minimal">
+                                        <a><h2>Feeling Lost, There is a desire to change.</h2></a>
+                                        <div class="display">
+                                            <p class="date">09-03, 2024</p>
+                                            <div class="verticle_line margin_1"></div>
+                                            <span>GuangZhou</span>
+                                        </div>
+                                        <p class="sub-heading">
+                                            I'm not sure why, but when I came across Zhu Ziqing's essay in elementary school textbook, my eyes unexpectedly welled up. Maybe it's because I've faced so many challenges since the start of the year, and right now, I feel like I'm in the same place as Zhu Ziqing was when he wrote this. I'm desperate for some good news, longing for a glimmer of hope - just a ray of sunshine, a single star in the sky.<br>
+                                            不知道为什么看到小学课本里朱自清的这篇散文的时候，眼睛不自觉的湿润了，可能是年初遭遇了很多的困难，此刻的我像是散文中的此刻的朱自清。我太渴望能看到一些好消息了，渴望光明，一束阳光，一颗太阳.
+                                        </p>
+                                    </div>
+                                    <div class="divider1"></div>
                                 </div>
-                                <p class="sub-heading">
-                                    I'm not sure why, but when I came across Zhu Ziqing's essay in elementary school textbook, my eyes unexpectedly welled up. Maybe it's because I've faced so many challenges since the start of the year, and right now, I feel like I'm in the same place as Zhu Ziqing was when he wrote this. I'm desperate for some good news, longing for a glimmer of hope - just a ray of sunshine, a single star in the sky.<br>
-                                    不知道为什么看到小学课本里朱自清的这篇散文的时候，眼睛不自觉的湿润了，可能是年初遭遇了很多的困难，此刻的我像是散文中的此刻的朱自清。我太渴望能看到一些好消息了，渴望光明，一束阳光，一颗太阳.
-                                </p>
                             </div>
-                            <div class="divider1"></div>
                         </div>
                     </div>
+                    
                     <style>
-                        .video-wrapper {
-                            width: 100%;
-                            margin: 0;
+                    /* 重置基础样式 */
+                    * {
+                        margin: 0;
+                        padding: 0;
+                        box-sizing: border-box;
+                    }
+                    
+                    /* 容器样式 */
+                    .container {
+                        width: 100%;
+                        max-width: 1200px;
+                        margin: 0 auto;
+                        padding: 0 15px;
+                    }
+                    
+                    /* 视频区域样式 */
+                    .video-wrapper {
+                        width: 100%;
+                        margin: 0 0 20px 0;
+                        padding: 0;
+                    }
+                    
+                    .full-width-video {
+                        width: 100%;
+                        height: auto;
+                        display: block;
+                        margin: 0;
+                        padding: 0;
+                    }
+                    
+                    /* 文本区域样式 */
+                    .text_minimal {
+                        width: 100%;
+                        padding: 20px 0;
+                    }
+                    
+                    .text_minimal h2 {
+                        font-size: 24px;
+                        margin-bottom: 15px;
+                    }
+                    
+                    .display {
+                        display: flex;
+                        align-items: center;
+                        margin-bottom: 15px;
+                    }
+                    
+                    .date {
+                        margin: 0;
+                    }
+                    
+                    .verticle_line {
+                        height: 15px;
+                        width: 1px;
+                        background-color: #333;
+                        margin: 0 10px;
+                    }
+                    
+                    .sub-heading {
+                        font-size: 16px;
+                        line-height: 1.6;
+                        color: #333;
+                    }
+                    
+                    .divider1 {
+                        width: 100%;
+                        height: 1px;
+                        background-color: #eee;
+                        margin: 20px 0;
+                    }
+                    
+                    /* 确保响应式布局正常工作 */
+                    @media (max-width: 768px) {
+                        .col-sm-12 {
                             padding: 0;
                         }
                         
-                        .full-width-video {
-                            width: 100%;
-                            height: auto;
-                            display: block;
-                            margin: 0;
-                            padding: 0;
+                        .text_minimal {
+                            padding: 15px;
                         }
                         
-                        /* 移除可能影响宽度的其他样式 */
-                        .carousel-inner,
-                        .carousel,
-                        .carousel-item {
-                            margin: 0 !important;
-                            padding: 0 !important;
-                            width: 100% !important;
+                        .text_minimal h2 {
+                            font-size: 20px;
                         }
-                        
-                        /* 确保容器不受Bootstrap列宽限制 */
-                        .col-lg-8 {
-                            padding-left: 0;
-                            padding-right: 0;
-                        }
-                        
-                        .audio-post {
-                            margin: 0;
-                            padding: 0;
-                            width: 100%;
-                        }
+                    }
+                    
+                    /* 移除可能影响宽度的其他样式 */
+                    .audio-post {
+                        margin: 0;
+                        padding: 0;
+                        width: 100%;
+                    }
+                    
+                    .col-lg-8 {
+                        padding-left: 0;
+                        padding-right: 0;
+                    }
+                    
+                    /* 确保内容区域最大宽度 */
+                    #section2 {
+                        width: 100%;
+                        max-width: 100%;
+                    }
                     </style>
+                 
                     
 
                     <!-- 感觉没啥爱人的能力 -->
