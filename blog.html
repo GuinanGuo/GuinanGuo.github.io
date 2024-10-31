@@ -308,36 +308,13 @@
 
 
                     <div class="col-sm-12 col-md-12 col-lg-8 pt-sm-4 pt-md-0 pt-lg-0 order-1 order-md-2">
-                        <!-- 朱自清作文-->
                         <div id="section2" class="audio-post mt-10">
-                            
-                            <!-- <div class="img-area">
-                                <div id="carouselExampleControls" class="carousel slide carousel-fade" data-ride="carousel">
-                                    <div class="carousel-inner ml-lg-10">
-                                        <div class="carousel-item active">
-                                            <video class="d-block w-100 h-100" controls>
-                                                <source src="static/video/video1.MOV" type="video/mp4" type="video/mp4">
-                                                <!-- Your browser does not support the video tag. -->
-                                            <!-- </video> -->
-                                        <!-- </div> -->
-                                    <!-- </div> -->
-                                <!-- </div> -->
-                            <!-- </div> --> 
-
                             <!-- 视频区域 -->
-                            <div class="video-area" style="width: 100%;">  <!-- 新增 video-area 类 -->
-                                <div id="carouselExampleControls" class="carousel slide carousal-fade" data-ride="carousel">
-                                    <div class="carousel-inner ml-lg-10">
-                                        <div class="carousel-item active">
-                                            <div class="video-container">  <!-- 新增视频容器 -->
-                                                <video class="d-block w-100" controls>
-                                                    <source src="static/video/video1.MOV" type="video/mp4">
-                                                    Your browser does not support the video tag.
-                                                </video>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                            <div class="video-wrapper"> <!-- 新的包装容器 -->
+                                <video controls class="full-width-video">
+                                    <source src="static/video/your-video.mp4" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
                             </div>
                             
                             <div class="text_minimal">
@@ -355,28 +332,41 @@
                         </div>
                     </div>
                     <style>
-                        .video-area {
-                            margin-bottom: 20px;
-                            max-width: 100%;
-                        }
-                        
-                        .video-container {
+                        .video-wrapper {
                             width: 100%;
-                            padding-right: 15px;
-                            padding-left: 15px;
+                            margin: 0;
+                            padding: 0;
                         }
                         
-                        .carousel-inner {
-                            width: 100%;
-                            margin-left: 0 !important; /* 覆盖 ml-lg-10 的影响 */
-                        }
-                        
-                        video {
+                        .full-width-video {
                             width: 100%;
                             height: auto;
                             display: block;
+                            margin: 0;
+                            padding: 0;
                         }
-                    </style>
+                        
+                        /* 移除可能影响宽度的其他样式 */
+                        .carousel-inner,
+                        .carousel,
+                        .carousel-item {
+                            margin: 0 !important;
+                            padding: 0 !important;
+                            width: 100% !important;
+                        }
+                        
+                        /* 确保容器不受Bootstrap列宽限制 */
+                        .col-lg-8 {
+                            padding-left: 0;
+                            padding-right: 0;
+                        }
+                        
+                        .audio-post {
+                            margin: 0;
+                            padding: 0;
+                            width: 100%;
+                        }
+                        </style>
                     
 
                     <!-- 感觉没啥爱人的能力 -->
