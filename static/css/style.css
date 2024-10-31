@@ -1203,6 +1203,16 @@ input, select, textarea {margin :0;}
     display: block;
 }
 
+.video-container {
+    width: 100%; /* 使视频容器与父容器宽度一致 */
+    overflow: hidden;
+    margin: 0 auto; /* 居中显示 */
+}
+.video-container video {
+    width: 100%; /* 视频自适应宽度 */
+}
+
+
 
 /****************FOOTER SECTION*******************/
 .footer{
